@@ -240,6 +240,7 @@ public class GameScreen {
 //		}
 		else if(simulation.isPaused()==false && currentSim>0)
 		{
+			
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
 			if(hit==true)
 			{

@@ -19,6 +19,7 @@ public class Text {
 	private float width;
 	private Loader loader;
 	private float z;
+	private ArrayList<GUIComponent> GUIlist = new ArrayList<GUIComponent>();
 	public Text(String str, float x, float y, float z, float height, float width, Loader loader)
 	{
 		this.str = str;
@@ -28,6 +29,7 @@ public class Text {
 		this.height = height;
 		this.width = width;
 		this.loader = loader;
+		getList();
 		
 		
 	}
@@ -39,6 +41,25 @@ public class Text {
 		for( int i=0;i<sizeS; i++)
 		{
 			New.add(Character.toString(this.str.charAt(i)));
+		}
+		
+		ArrayList<Integer> integer = new ArrayList<Integer>();
+		for(int i=0; i<sizeS;i++)
+		{
+			integer.add(Integer.parseInt(New.get(i)));
+		}
+		
+		return integer;	
+	}
+	
+	private ArrayList<Integer> changeText(String str)
+	{
+		int sizeS = str.length();
+
+		ArrayList<String> New = new ArrayList<String>();
+		for( int i=0;i<sizeS; i++)
+		{
+			New.add(Character.toString(str.charAt(i)));
 		}
 		
 		ArrayList<Integer> integer = new ArrayList<Integer>();
@@ -81,7 +102,7 @@ public class Text {
 		 return width;
 	 }
 	 
-	 public ArrayList<GUIComponent> getList(){
+	 public void getList(){
 		 ArrayList<Integer> list = new ArrayList<Integer>();
 		 list = changeText();
 		 int size = list.size();
@@ -111,7 +132,28 @@ public class Text {
 				
 				gui.add(letter);
 		 }
+		
+		 GUIlist.addAll(gui);
+	 }
+	 
+	 
+	 
+	 public void changeStr(String str)
+	 {
 		 
-		 return gui;
+		 int length = this.str.length();
+		 if(length==str.length())
+		 {
+			ArrayList<Integer> intList = changeText(str);
+			for(int i = 0; i<length;i++)
+			{
+				GUIlist.get(i).getModel().setTextureID("./num/"+intList.get(i)+".png", loader);
+			}
+		 }
+	 }
+	 
+	 public ArrayList<GUIComponent> getGUIlist()
+	 {
+		 return GUIlist;
 	 }
 }
