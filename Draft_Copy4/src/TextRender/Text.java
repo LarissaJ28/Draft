@@ -30,10 +30,10 @@ public class Text {
 		this.width = width;
 		this.loader = loader;
 		getList();
-		
-		
+
+
 	}
-	private ArrayList<Integer> changeText()
+	private ArrayList<String> changeText()
 	{
 		int sizeS = this.str.length();
 
@@ -41,18 +41,15 @@ public class Text {
 		for( int i=0;i<sizeS; i++)
 		{
 			New.add(Character.toString(this.str.charAt(i)));
+
 		}
-		
-		ArrayList<Integer> integer = new ArrayList<Integer>();
-		for(int i=0; i<sizeS;i++)
-		{
-			integer.add(Integer.parseInt(New.get(i)));
-		}
-		
-		return integer;	
+
+		return New;	
 	}
-	
-	private ArrayList<Integer> changeText(String str)
+
+
+
+	private ArrayList<String> changeText(String str)
 	{
 		int sizeS = str.length();
 
@@ -60,100 +57,150 @@ public class Text {
 		for( int i=0;i<sizeS; i++)
 		{
 			New.add(Character.toString(str.charAt(i)));
+
 		}
-		
-		ArrayList<Integer> integer = new ArrayList<Integer>();
-		for(int i=0; i<sizeS;i++)
-		{
-			integer.add(Integer.parseInt(New.get(i)));
-		}
-		
-		return integer;	
+
+		return New;	
 	}
-	 public void setPositionOfLine(float x, float y)
-	 {
-		 this.x = x;
-		 this.y=y;
-	 }
-	 
-	 public float getPositionOfLineX()
-	 {
-		 return x;
-	 }
-	 
-	 public float getPositionOfLineY()
-	 {
-		 return y;
-	 }
-	 
-	 public void setSize(int size)
-	 {
-		 this.height = this.height*size;
-		 this.width = this.width*size;
-	 }
-	 public float getHeight()
-	 {
-		 return height;
-		 
-	 }
-	 
-	 public float getWidth()
-	 {
-		 return width;
-	 }
-	 
-	 public void getList(){
-		 ArrayList<Integer> list = new ArrayList<Integer>();
-		 list = changeText();
-		 int size = list.size();
-		 ArrayList<GUIComponent> gui = new ArrayList<GUIComponent>();
-		 
-		 for(int i = 0; i<size;i++ )
-		 {
-			 float height = this.height;
-			 float width = this.width;
-			 float x = this.x +width/2 +0.3f*width*i;
-			 float y = this.y+height;
-			 float z=this.z;
-			 
-			 float[] vertices = Entity.getVertices(width, height, z);
+	public void setPositionOfLine(float x, float y)
+	{
+		this.x = x;
+		this.y=y;
+	}
+
+	public float getPositionOfLineX()
+	{
+		return x;
+	}
+
+	public float getPositionOfLineY()
+	{
+		return y;
+	}
+
+	public void setSize(int size)
+	{
+		this.height = this.height*size;
+		this.width = this.width*size;
+	}
+	public float getHeight()
+	{
+		return height;
+
+	}
+
+	public float getWidth()
+	{
+		return width;
+	}
+
+	public void getList(){
+		ArrayList<String> list = new ArrayList<String>();
+		list = changeText();
+		int size = list.size();
+
+
+		for(int i = 0; i<size;i++ )
+		{
+			float height = this.height;
+			float width = this.width;
+			float x = this.x +width/2 +0.3f*width*i;
+			float y = this.y+height;
+			float z=this.z;
+
+			float[] vertices = Entity.getVertices(width, height, z);
 			float[] texCoords = Entity.getTexCoords();
-				int[] indices = Entity.getIndices();
-						
-				Vector3f rotation = new Vector3f(0,0,0);
-				float scale = 1f;
-				
-				Vector3f Pos = new Vector3f(x, y, z);
-				
-				int textureID = loader.loadTexture("./num/"+list.get(i)+".png");
-				Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-				
-				Button letter = new Button(nButtonModel, Pos, rotation, scale, width, height);
-				
-				gui.add(letter);
-		 }
-		
-		 GUIlist.addAll(gui);
-	 }
-	 
-	 
-	 
-	 public void changeStr(String str)
-	 {
-		 
-		 int length = this.str.length();
-		 if(length==str.length())
-		 {
-			ArrayList<Integer> intList = changeText(str);
+			int[] indices = Entity.getIndices();
+
+			Vector3f rotation = new Vector3f(0,0,0);
+			float scale = 1f;
+
+			Vector3f Pos = new Vector3f(x, y, z);
+
+			int textureID = loader.loadTexture("./num/"+list.get(i)+".png");
+			Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+
+			Button letter = new Button(nButtonModel, Pos, rotation, scale, width, height);
+
+			GUIlist.add(letter);
+		}
+
+
+	}
+
+	public void addStr(int index)
+	{
+		float height = this.height;
+		float width = this.width;
+		float x = this.x +width/2 +0.3f*width*index;
+		float y = this.y+height;
+		float z=this.z;
+
+		float[] vertices = Entity.getVertices(width, height, z);
+		float[] texCoords = Entity.getTexCoords();
+		int[] indices = Entity.getIndices();
+
+		Vector3f rotation = new Vector3f(0,0,0);
+		float scale = 1f;
+
+		Vector3f Pos = new Vector3f(x, y, z);
+
+		int textureID = loader.loadTexture("./num/1.png");
+		Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+
+		Button letter = new Button(nButtonModel, Pos, rotation, scale, width, height);
+
+		GUIlist.add(letter);
+	}
+
+
+
+
+
+	public void changeStr(String str)
+	{
+
+		int length = this.str.length();
+		ArrayList<String> intList = changeText(str);
+		if(length==str.length())
+		{
 			for(int i = 0; i<length;i++)
 			{
 				GUIlist.get(i).getModel().setTextureID("./num/"+intList.get(i)+".png", loader);
 			}
-		 }
-	 }
-	 
-	 public ArrayList<GUIComponent> getGUIlist()
-	 {
-		 return GUIlist;
-	 }
+
+		}
+		else if(length<str.length())
+		{
+			for(int i = 0; i<length;i++)
+			{
+				GUIlist.get(i).getModel().setTextureID("./num/"+intList.get(i)+".png", loader);
+			}
+			for(int n= length;n<str.length();n++)
+			{
+				addStr(n);
+				GUIlist.get(n).getModel().setTextureID("./num/"+intList.get(n)+".png", loader);
+
+			}
+		}
+		else if(length>str.length())
+		{
+			for(int i = 0; i<str.length();i++)
+			{
+				GUIlist.get(i).getModel().setTextureID("./num/"+intList.get(i)+".png", loader);
+			}
+			for(int n=length-1;n>=str.length();n--)
+			{
+
+				GUIlist.remove(n);
+
+			}
+		}
+		this.str = str;
+	}
+
+	public ArrayList<GUIComponent> getGUIlist()
+	{
+		return GUIlist;
+	}
 }

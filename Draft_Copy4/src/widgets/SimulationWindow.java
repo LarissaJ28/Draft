@@ -314,7 +314,7 @@ public class SimulationWindow {
 		Vector3f velocity = new Vector3f(0,0,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = height / modelSideLength;
+		float scale = 1;
 		
 		Rectangle metalBox = new Rectangle(metalBoxModel, position, velocity, acceleration, rotation, scale, 
 				mass, e, width, height, METAL_BOX_STATIC_FRICTION, METAL_BOX_KINETIC_FRICTION);

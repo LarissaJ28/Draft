@@ -112,7 +112,7 @@ public class MenuScreen {
 		
 		helpButton = new Button(hButtonModel, hButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
-		text = new Text("123", 0,0,z, 200,200,loader);
+		text = new Text("1-23", 0,0,z, 200,200,loader);
 //		text1 = new Text("234", 230,0,z,50,50,loader);
 		
 		// initialize GUI components array list
@@ -121,7 +121,7 @@ public class MenuScreen {
 		guiComponents.add(lessonButton);
 		guiComponents.add(customizedButton);
 		guiComponents.add(helpButton);
-		guiComponents.addAll(text.getGUIlist());
+		
 		//guiComponents.addAll(text1.getList());
 		
 		// initialize button array list
@@ -139,9 +139,12 @@ public class MenuScreen {
 	 */
 	public void render(Renderer renderer) {
 		
+		
 		renderer.renderGUI(guiComponents);
-		text.changeStr("234");
-		text.changeStr("567");
+		renderer.renderGUI(text.getGUIlist());
+		
+		text.changeStr("12345");
+//		text.changeStr("567");
 	}
 	
 	/**

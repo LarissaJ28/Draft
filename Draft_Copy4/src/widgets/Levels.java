@@ -12,21 +12,22 @@ private static final String CONGRATULATION_MESSAGE_TEXTURE_FILE = "./res/Congrat
 private static final String DISABLED_TEXTURE_FILE = "./res/LevelDisabled.png";
 	public boolean check(int level, Entity Ball, Entity Target)
 	{
-		if(level == 1)
+		if(Ball.intersects(Target)==true)
 		{
-			if(Ball.intersects(Target)==true)
-			{
-				return true;
-			}
+			return true;
 		}
-		else if(level == 2)
-		{
-			if(Ball.intersects(Target)==true)
-			{
-				return true;
-			}
-		}
-		
+//		if(level == 1)
+//		{
+//			
+//		}
+//		else if(level == 2)
+//		{
+//			if(Ball.intersects(Target)==true)
+//			{
+//				return true;
+//			}
+//		}
+//		
 		return false;
 	}
 	
