@@ -143,7 +143,7 @@ public class MenuScreen {
 		renderer.renderGUI(guiComponents);
 		renderer.renderGUI(text.getGUIlist());
 		
-		text.changeStr("12345");
+	text.changeStr("12 345");
 //		text.changeStr("567");
 	}
 	

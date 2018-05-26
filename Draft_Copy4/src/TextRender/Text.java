@@ -36,11 +36,17 @@ public class Text {
 	private ArrayList<String> changeText()
 	{
 		int sizeS = this.str.length();
-
+       
 		ArrayList<String> New = new ArrayList<String>();
 		for( int i=0;i<sizeS; i++)
 		{
+			if((Character.toString(this.str.charAt(i))).equals(" "))
+			{
+				New.add("space");
+			}
+			else {
 			New.add(Character.toString(this.str.charAt(i)));
+			}
 
 		}
 
@@ -56,7 +62,13 @@ public class Text {
 		ArrayList<String> New = new ArrayList<String>();
 		for( int i=0;i<sizeS; i++)
 		{
+			if((Character.toString(str.charAt(i))).equals(" "))
+			{
+				New.add("space");
+			}
+			else {
 			New.add(Character.toString(str.charAt(i)));
+			}
 
 		}
 
@@ -116,8 +128,10 @@ public class Text {
 			float scale = 1f;
 
 			Vector3f Pos = new Vector3f(x, y, z);
-
-			int textureID = loader.loadTexture("./num/"+list.get(i)+".png");
+			
+			
+			 int textureID = loader.loadTexture("./num/"+list.get(i)+".png");
+			
 			Model nButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 
 			Button letter = new Button(nButtonModel, Pos, rotation, scale, width, height);
@@ -161,6 +175,7 @@ public class Text {
 	{
 
 		int length = this.str.length();
+		str.replaceAll(" ","space");
 		ArrayList<String> intList = changeText(str);
 		if(length==str.length())
 		{
