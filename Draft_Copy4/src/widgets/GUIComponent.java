@@ -64,6 +64,8 @@ public class GUIComponent {
 	public void setPosition(Vector3f position) {
 		this.position = position;
 	}
+	
+	
 
 	/**
 	 * Returns the GUI component's rotation.

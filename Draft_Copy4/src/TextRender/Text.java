@@ -74,22 +74,47 @@ public class Text {
 
 		return New;	
 	}
-	public void setPositionOfLine(float x, float y)
-	{
-		this.x = x;
-		this.y=y;
-	}
-
+	
 	public float getPositionOfLineX()
 	{
 		return x;
+		
 	}
 
 	public float getPositionOfLineY()
 	{
 		return y;
 	}
-
+	
+	public void setPositionX(float x)
+	{
+		this.x=x;
+		for (int i = 0 ; i<GUIlist.size();i++)
+		{
+			Vector3f New = new Vector3f(x+width/2 +0.3f*width*i,y+height,z);
+			GUIlist.get(i).setPosition(New);
+		}
+	}
+	public void setPositionY(float y)
+	{
+		this.y=y;
+		for (int i = 0 ; i<GUIlist.size();i++)
+		{
+			Vector3f New = new Vector3f(x+width/2 +0.3f*width*i,y+height,z);
+			GUIlist.get(i).setPosition(New);
+		}
+	}
+	
+	public void setPositionZ(float z)
+	{
+		this.z=z;
+		for (int i = 0 ; i<GUIlist.size();i++)
+		{
+			Vector3f New = new Vector3f(x+width/2 +0.3f*width*i,y+height,z);
+			GUIlist.get(i).setPosition(New);
+		}
+	}
+	
 	public void setSize(int size)
 	{
 		this.height = this.height*size;
