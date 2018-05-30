@@ -14,6 +14,7 @@ public class Circle extends Entity {
 
 	// instance variables
 	private float radius;
+	private Vector3f position;
 	
 	// constructor
 	public Circle(Model model, Vector3f position, Vector3f velocity, Vector3f acceleration, Vector3f rotation,
@@ -57,6 +58,19 @@ public class Circle extends Entity {
 	public boolean intersects(AABB a) {
 		
 		return a.intersects(this);
+	}
+public boolean intersects(Rectangle a) {
+		if(a.getAabb().getMax().y>this.getPosition().y-radius && a.getAabb().getMin().y<this.getPosition().y+radius&&a.getAabb().getMin().x<this.getPosition().x+radius&&a.getAabb().getMax().x>this.getPosition().x-radius)
+		{
+			
+			return true;
+		}
+		
+		
+		else
+		{
+		return false;
+		}
 	}
 	
 	/**

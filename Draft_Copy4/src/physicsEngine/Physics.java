@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.joml.Vector3f;
 
+import objects.Cannon;
 import objects.Circle;
 import objects.Entity;
 import objects.Rectangle;
@@ -18,6 +19,7 @@ import objects.Rectangle;
  */
 public class Physics {
 	
+	static float z;
 	/**
 	 * Manages the collision detection and collision response between 
 	 * all possible collision scenarios.
@@ -29,55 +31,86 @@ public class Physics {
 	 * @param rightBoundary  	the boundary bordering the right of the simulation window
 	 * @param z 		 	the z-value of all entities
 	 */
-	public static void collision(ArrayList<Entity> entities, Rectangle ground, Rectangle leftBoundary, 
-			Rectangle topBoundary, Rectangle rightBoundary, float z) {
-			
-		// entity-entity collision
-		for (int i = 0; i < entities.size(); i++) {
-			for (int j = i + 1; j < entities.size(); j++) {
-					
-				Entity a = entities.get(i);
-				Entity b = entities.get(j);
-					
-					
-				// if collision is detected
-				if (a.intersects(b)) {
-					
-					// if A is Rectangle
-					if (a instanceof Rectangle) {
-							
-						// if B is Rectangle
-						if (b instanceof Rectangle) {
+
+	
+
+		
+		public static void collision(ArrayList<Entity> entities,ArrayList<Entity> boundaries , float z1, ArrayList<Integer> velocities) {
+				
+			z=z1;
+			// entity-entity collision
+			for (int i = 0; i < entities.size(); i++) {
+				for (int j = i + 1; j < entities.size(); j++) {
+						
+					Entity a = entities.get(i);
+					Entity b = entities.get(j);
+						
+						
+					// if collision is detected
+					if (a.intersects(b)) {
+						
+						// if A is Rectangle
+						if (a instanceof Rectangle) {
 								
-							collisionRectangleRectangle((Rectangle) a, (Rectangle) b);
+							// if B is Rectangle
+							if (b instanceof Rectangle) {
+								
+								if(a instanceof Cannon)
+								{
+									
+									collisionCannon((Rectangle) b, velocities);
+								}
+								else
+								{
+								collisionRectangleRectangle((Rectangle) a, (Rectangle) b);
+								}
+							}
+								
+							// if B is Circle
+							if (b instanceof Circle) {
+									
+								if(a instanceof Cannon)
+								{
+									
+									collisionCannon((Circle) b, velocities);
+								}
+								else
+								{
+									
+								collisionRectangleCircle((Rectangle) a, (Circle) b);
+								}
+								
+							}
 						}
 							
-						// if B is Circle
-						if (b instanceof Circle) {
+						// if A is Circle
+						if (a instanceof Circle) {
 								
-							collisionRectangleCircle((Rectangle) a, (Circle) b);
+							// if B is Rectangle
+							if (b instanceof Rectangle) {
+								if(b instanceof Cannon)
+								{
+									
+									collisionCannon((Circle) a, velocities);
+								}
+								else
+								{
+									
+									collisionRectangleCircle((Rectangle) b, (Circle) a);
+								}
+								
+							}
+								
+							// if B is Circle
+							if (b instanceof Circle) {
+									
+								collisionCircleCircle((Circle) a, (Circle) b);
+							}
 						}
 					}
 						
-					// if A is Circle
-					if (a instanceof Circle) {
-							
-						// if B is Rectangle
-						if (b instanceof Rectangle) {
-								
-							collisionRectangleCircle((Rectangle) b, (Circle) a);
-						}
-							
-						// if B is Circle
-						if (b instanceof Circle) {
-								
-							collisionCircleCircle((Circle) a, (Circle) b);
-						}
-					}
 				}
-					
 			}
-		}
 			
 		// entity-boundary collision
 		for (Entity entity:entities) {
@@ -86,17 +119,25 @@ public class Physics {
 			if (entity instanceof Rectangle) {
 					
 				Rectangle r = (Rectangle) entity;
+				
+				for (Entity boundary: boundaries)
+				{
+					Rectangle b = (Rectangle) boundary;
 					
+				
 				// ground
-				if (r.getAabb().intersects(ground.getAabb())) {
+				if (r.getAabb().intersects(b.getAabb())) {
 					
+					//top
+					if(b.getAabb().getMin().y <r.getAabb().getMax().y)
+					{
 					r.setPosition(new Vector3f(r.getPosition().x, 
-							ground.getAabb().getMax().y + r.getHeight()/2, z));
+							b.getAabb().getMax().y + r.getHeight()/2, z));
 					r.setVelocity(new Vector3f(r.getVelocity().x, 
 							r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
 					
 					// friction
-					float mu = pythagoreanTheorem(r.getKineticFriction(), ground.getKineticFriction());
+					float mu = pythagoreanTheorem(r.getKineticFriction(), b.getKineticFriction());
 					float magnitude = mu * 9.81f;
 					
 					if (r.getVelocity().x > 0) {
@@ -113,88 +154,123 @@ public class Physics {
 						else
 							r.getVelocity().x += magnitude;
 					}
+					}
+					
+					// left boundary
+					else if (b.getAabb().getMax().x >r.getAabb().getMin().x) {
+						r.setPosition(new Vector3f(b.getAabb().getMax().x + r.getWidth()/2, 
+								r.getPosition().y, z));
+						r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
+								r.getVelocity().y, 0));
+					}
+					// top boundary
+					
+					else if (b.getAabb().getMax().y >r.getAabb().getMin().y) {
+						r.setPosition(new Vector3f(r.getPosition().x, 
+								b.getAabb().getMin().y - r.getHeight()/2, z));
+						r.setVelocity(new Vector3f(r.getVelocity().x, 
+								r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
+					}
+					
+					// right boundary
+					else if (b.getAabb().getMin().x <r.getAabb().getMax().x) {
+						r.setPosition(new Vector3f(b.getAabb().getMin().x - r.getWidth()/2, 
+								r.getPosition().y, z));
+						r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
+								r.getVelocity().y, 0));
+					}
 				}
 					
-				// left boundary
-				if (r.getAabb().intersects(leftBoundary.getAabb())) {
-					r.setPosition(new Vector3f(leftBoundary.getAabb().getMax().x + r.getWidth()/2, 
-							r.getPosition().y, z));
-					r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
-							r.getVelocity().y, 0));
-				}
+				
 					
-				// top boundary
-				if (r.getAabb().intersects(topBoundary.getAabb())) {
-					r.setPosition(new Vector3f(r.getPosition().x, 
-							topBoundary.getAabb().getMin().y - r.getHeight()/2, z));
-					r.setVelocity(new Vector3f(r.getVelocity().x, 
-							r.getVelocity().y * r.getCoefficientOfRestitution(), 0));
-				}
+				
 					
-				// right boundary
-				if (r.getAabb().intersects(rightBoundary.getAabb())) {
-					r.setPosition(new Vector3f(rightBoundary.getAabb().getMin().x - r.getWidth()/2, 
-							r.getPosition().y, z));
-					r.setVelocity(new Vector3f(r.getVelocity().x * r.getCoefficientOfRestitution(), 
-							r.getVelocity().y, 0));
-				}
-			}
+				
+			}}
 				
 			// if entity is circle
 			else if (entity instanceof Circle) {
-					
+//					
 				Circle c = (Circle) entity;
+				
+				for (Entity boundary: boundaries)
+				{
+					Rectangle b = (Rectangle) boundary;
 					
-				// ground
-				if (c.intersects(ground.getAabb())) {
-					c.setPosition(new Vector3f(c.getPosition().x, 
-							ground.getAabb().getMax().y + c.getRadius(), z));
-					c.setVelocity(new Vector3f(c.getVelocity().x, 
-							c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
-					
-					// friction
-					float mu = pythagoreanTheorem(c.getKineticFriction(), ground.getKineticFriction());
-					float magnitude = mu * 9.81f;
-					
-					if (c.getVelocity().x > 0) {
+				if (c.intersects(b)==true) 
+					{
 						
-						if (c.getVelocity().x < magnitude)
-							c.getVelocity().x = 0f;
-						else
-							c.getVelocity().x -= magnitude;
-					}
-					else if (c.getVelocity().x < 0) {
+						//top
 						
-						if (c.getVelocity().x > -magnitude)
-							c.getVelocity().x = 0f;
-						else
-							c.getVelocity().x += magnitude;
+						 if (b.getAabb().getMax().y >c.getPosition().y-c.getRadius()&&b.getPosition().y<c.getPosition().y-c.getRadius()) {
+							System.out.println("top");
+							c.setPosition(new Vector3f(c.getPosition().x, 
+									b.getAabb().getMax().y + c.getRadius(), z));
+							c.setVelocity(new Vector3f(c.getVelocity().x, 
+									c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
+							
+							// friction
+							float mu = pythagoreanTheorem(c.getKineticFriction(), b.getKineticFriction());
+							float magnitude = mu * 9.81f;
+							
+							if (c.getVelocity().x > 0) {
+								
+								if (c.getVelocity().x < magnitude)
+									c.getVelocity().x = 0f;
+								else
+									c.getVelocity().x -= magnitude;
+							}
+							else if (c.getVelocity().x < 0) {
+								
+								if (c.getVelocity().x > -magnitude)
+									c.getVelocity().x = 0f;
+								else
+									c.getVelocity().x += magnitude;
+							} 
+							
+						} 
+						//bottom
+						 else if (b.getAabb().getMin().y <c.getPosition().y+c.getRadius()&&b.getPosition().y>c.getPosition().y+c.getRadius()) {
+							System.out.println("bottom");
+							c.setPosition(new Vector3f(c.getPosition().x, 
+									b.getAabb().getMin().y - c.getRadius(), z));
+							c.setVelocity(new Vector3f(c.getVelocity().x, 
+									c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
+						} 
+//						right
+						 
+						else if (b.getAabb().getMax().x >c.getPosition().x-c.getRadius()&&b.getPosition().x<c.getPosition().x-c.getRadius()) {
+							System.out.println("right");
+							System.out.println(b.getAabb().getMin().x);
+							System.out.println(b.getAabb().getMin().y);
+							System.out.println(b.getAabb().getMax().x);
+							System.out.println(b.getAabb().getMax().y);
+							c.setPosition(new Vector3f(b.getAabb().getMax().x + c.getRadius(), 
+									c.getPosition().y, z));
+							c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
+									c.getVelocity().y, 0));
+						}
+						
+//						
+//						//left
+						//b.getAabb().getMax().x >c.getPosition().x-c.getRadius()
+						 
+						else if (b.getAabb().getMin().x <c.getPosition().x+c.getRadius()&&b.getPosition().x>c.getPosition().x+c.getRadius()) {
+							System.out.println("left");
+							System.out.println(b.getAabb().getMin().x);
+							System.out.println(b.getAabb().getMin().y);
+							System.out.println(b.getAabb().getMax().x);
+							System.out.println(b.getAabb().getMax().y);
+							c.setPosition(new Vector3f(b.getAabb().getMin().x - c.getRadius(), 
+									c.getPosition().y, z));
+							c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
+									c.getVelocity().y, 0));
+						} 
+							
 					}
+				
 				}
-					
-				// left boundary
-				if (c.intersects(leftBoundary.getAabb())) {
-					c.setPosition(new Vector3f(leftBoundary.getAabb().getMax().x + c.getRadius(), 
-							c.getPosition().y, z));
-					c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
-							c.getVelocity().y, 0));
-				}
-					
-				// top boundary
-				if (c.intersects(topBoundary.getAabb())) {
-					c.setPosition(new Vector3f(c.getPosition().x, 
-							topBoundary.getAabb().getMin().y - c.getRadius(), z));
-					c.setVelocity(new Vector3f(c.getVelocity().x, 
-							c.getVelocity().y * c.getCoefficientOfRestitution(), 0));
-				}
-					
-				// right boundary
-				if (c.intersects(rightBoundary.getAabb())) {
-					c.setPosition(new Vector3f(rightBoundary.getAabb().getMin().x - c.getRadius(), 
-							c.getPosition().y, z));
-					c.setVelocity(new Vector3f(c.getVelocity().x * c.getCoefficientOfRestitution(), 
-							c.getVelocity().y, 0));
-				}
+				
 			}
 				
 		}
@@ -306,10 +382,10 @@ public class Physics {
 		impulseResolution(collisionNormal, a, b);
 	}
 	
-	public static void collisionRampCircle(Ramp a, Circle b)
-	{
-		Vector3f closest = new Vector3f(b.getPosition().x, b.getPosition().y, b.getPosition().z);
-	}
+//	public static void collisionRampCircle(Ramp a, Circle b)
+//	{
+//		Vector3f closest = new Vector3f(b.getPosition().x, b.getPosition().y, b.getPosition().z);
+//	}
 		
 	/**
 	 * Manages rectangle-circle collision.
@@ -430,6 +506,10 @@ public class Physics {
 		// store inverse masses
 		float invMassA = 1f / a.getMass();
 		float invMassB = 1f / b.getMass();
+//		if(type == 1)
+//		{
+//			invMassB = 0;
+//		}
 			
 		// find velocity of B relative to A
 		Vector3f relativeVel = new Vector3f();
@@ -457,7 +537,9 @@ public class Physics {
 				
 			// apply impulse
 			a.getVelocity().sub(impulseA.div(a.getMass()));
+			
 			b.getVelocity().add(impulseB.div(b.getMass()));
+			
 			
 			// apply friction
 			// this method is called here to make use of the impulse scalar that was calculated
@@ -561,5 +643,20 @@ public class Physics {
 		
 		return c;
 	}
+	
+	public static void collisionCannon( Circle a, ArrayList<Integer> velocities)
+	{
+		Vector3f New = new Vector3f(30, 10,z);
+		
+		a.setVelocity(New);
+	}
+	
+	public static void collisionCannon( Rectangle a, ArrayList<Integer> velocities)
+	{
+		Vector3f New = new Vector3f(velocities.get(0), 200,z);
+		
+		a.setVelocity(New);
+	}
+	
 	
 }

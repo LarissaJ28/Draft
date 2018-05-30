@@ -31,7 +31,6 @@ public class Text {
 		this.loader = loader;
 		getList();
 
-
 	}
 	private ArrayList<String> changeText()
 	{

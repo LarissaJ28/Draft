@@ -489,6 +489,21 @@ public class GameScreen {
 							return;
 							
 						}
+						else if (button.equals(toolbar.getCannonButton())&&simulation.isPaused())
+						{
+							
+							float sideLength = 50;
+							float posX = toolbar.getRampButton().getPosition().x;
+							float posY = toolbar.getRampButton().getPosition().y;
+							
+							float mass = 20;
+							float e = -0.7f;
+										
+							selectedEntity = simulation.createCannonEntity(sideLength, posX, posY, z, mass, e);
+						
+							program = 1;
+							return;
+						}
 					}
 								
 				}

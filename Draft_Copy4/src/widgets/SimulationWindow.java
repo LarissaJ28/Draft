@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.joml.Vector3f;
 
 import io.IO;
+import objects.Cannon;
 import objects.Circle;
 import objects.Entity;
 import objects.Loader;
@@ -37,7 +38,7 @@ public class SimulationWindow {
 	private ArrayList<Entity> boundaries;
 	private ArrayList<Entity> other = new ArrayList<Entity>();
 	private ArrayList<GUIComponent> guiComponents;
-	
+	private ArrayList<Integer> velocities;
 	private boolean pause;
 	private float z;
 	
@@ -57,6 +58,8 @@ public class SimulationWindow {
 	private Model ballModel;
 	private Model targetModel;
 	private Model rampModel;
+	private Model lModel;
+	private Model cannonModel;
 	
 	// button for pause and play simulation
 	private Button pausePlayButton;
@@ -72,6 +75,7 @@ public class SimulationWindow {
 	public static final String SKY_TEXTURE_FILE = "./res/sky.png";
 	public static final String TARGET_TEXTURE_FILE = "./res/Target.png";
 	public static final String RAMP_TEXTURE_FILE = "./res/RampObj.png";
+	public static final String CANNON_TEXTURE_FILE = "./res/Cannon.png";
 	
 	public static final String PAUSE_BUTTON_TEXTURE_FILE = "./res/pauseButton.png";
 	public static final String PLAY_BUTTON_TEXTURE_FILE = "./res/playButton.png";
@@ -94,9 +98,11 @@ public class SimulationWindow {
 	
 	private static float g = -9.81f;	// acceleration due to gravity
 	
+	private Loader loader;
 	// constructor
 	public SimulationWindow(long window, Loader loader, float screenWidth, float screenHeight, float z) {
 		
+		this.loader = loader;
 		// ******** INITIAL STATES OF BOUNDARIES ********
 		// 
 		// 	width		the boundary width
@@ -138,7 +144,7 @@ public class SimulationWindow {
 		
 		vertices = Entity.getVertices(lWidth, lHeight, z - 100f);
 		textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
-		Model lModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		 lModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		leftBoundary = new Rectangle(lModel, lPos, velocity, acceleration, rotation, scale, 
 				maximumMass, 0, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
@@ -254,6 +260,10 @@ public class SimulationWindow {
 		
 		textureID = loader.loadTexture(RAMP_TEXTURE_FILE);
 		rampModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		textureID = loader.loadTexture(CANNON_TEXTURE_FILE);
+		cannonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
 		// **********************************************
 		
 		
@@ -264,6 +274,7 @@ public class SimulationWindow {
 		pause = true;
 		
 		this.z = z;
+		velocities =new ArrayList<Integer>();
 		
 		// set up min and max points
 		min = new Vector3f(leftBoundary.getAabb().getMax().x, ground.getAabb().getMax().y, z);
@@ -287,7 +298,7 @@ public class SimulationWindow {
 		Vector3f velocity = new Vector3f(0,0,0);
 		Vector3f acceleration = new Vector3f(0,g,0);
 		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = sideLength / modelSideLength;
+		float scale = sideLength/modelSideLength;
 		
 		Rectangle crate = new Rectangle(crateModel, position, velocity, acceleration, rotation, scale, 
 				mass, e, sideLength, sideLength, CRATE_STATIC_FRICTION, CRATE_KINETIC_FRICTION);
@@ -297,6 +308,22 @@ public class SimulationWindow {
 		return crate;
 	}
 	
+public Entity ncreateCrateEntity(float sideLength, float x, float y, float z, float mass, float e) {
+		
+		Vector3f position = new Vector3f(x,y,z);
+		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f acceleration = new Vector3f(0,0,0);
+		Vector3f rotation = new Vector3f(0,0,0);
+		float scale = sideLength/modelSideLength;
+		
+		Rectangle crate = new Rectangle(crateModel, position, velocity, acceleration, rotation, scale, 
+				mass, e, sideLength, sideLength, CRATE_STATIC_FRICTION, CRATE_KINETIC_FRICTION);
+		
+		boundaries.add(crate);
+		
+		return crate;
+	}
+
 	/**
 	 * Creates a metal box entity in the simulation window.
 	 * 
@@ -308,18 +335,27 @@ public class SimulationWindow {
 	 * @param e				the metal box's coefficient of restitution
 	 * @return metalBox		the metal box entity
 	 */
-	public Entity createMetalBoxEntity(float width, float height, float x, float y, float z, float mass, float e) {
+	public Entity ncreateMetalBoxEntity(float width, float height, float x, float y, float z, float mass, float e) {
 		
 		Vector3f position = new Vector3f(x,y,z);
 		Vector3f velocity = new Vector3f(0,0,0);
-		Vector3f acceleration = new Vector3f(0,g,0);
+		Vector3f acceleration = new Vector3f(0,0,0);
 		Vector3f rotation = new Vector3f(0,0,0);
-		float scale = 1;
+		float scale = width/modelSideLength;
 		
-		Rectangle metalBox = new Rectangle(metalBoxModel, position, velocity, acceleration, rotation, scale, 
+		float[] vertices = Entity.getVertices(width, height, z);
+		float[] texCoords = Entity.getTexCoords();
+		int[] indices = Entity.getIndices();
+		
+		// crate model
+		int textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
+		Model newModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		
+		Rectangle metalBox = new Rectangle(crateModel, position, velocity, acceleration, rotation, scale, 
 				mass, e, width, height, METAL_BOX_STATIC_FRICTION, METAL_BOX_KINETIC_FRICTION);
 		
-		entities.add(metalBox);
+		boundaries.add(metalBox);
 		
 		return metalBox;
 	}
@@ -363,6 +399,22 @@ public class SimulationWindow {
 		
 		
 		return ball;
+	}
+	public Entity createCannonEntity( float sideLength, float x, float y, float z, float mass, float e)
+	{
+		Vector3f position = new Vector3f(x,y,z);
+		Vector3f velocity = new Vector3f(0,0,0);
+		Vector3f acceleration = new Vector3f(0,g,0);
+		Vector3f rotation = new Vector3f(0,0,0);
+		float scale = sideLength / modelSideLength;
+		
+		Cannon metalBox = new Cannon(cannonModel, position, velocity, acceleration, rotation, scale, 
+				mass, e,sideLength, sideLength, RAMP_STATIC_FRICTION,RAMP_KINETIC_FRICTION);
+		
+		entities.add(metalBox);
+		velocities.add(20);
+		velocities.add(25);		
+		return metalBox;
 	}
 	
 	public Entity createRampEntity(float base, float height, float x, float y, float z, float mass, float e)
@@ -409,7 +461,7 @@ public class SimulationWindow {
 			boundary.update(dt);
 		}
 		
-		Physics.collision(entities, ground, leftBoundary, topBoundary, rightBoundary, z);
+		Physics.collision(entities, boundaries, z, velocities);
 	}
 	
 	/**
@@ -458,6 +510,11 @@ public class SimulationWindow {
 		
 		// clear current simulation data
 		entities.clear();
+		other.clear();
+		for(int i=4; i<boundaries.size();i++)
+		{
+		boundaries.remove(i);
+		}
 		
 		try {
 			IO.openInputFile(fileName);
@@ -481,7 +538,7 @@ public class SimulationWindow {
 					float mass = Float.parseFloat(IO.readLine());
 					float e = Float.parseFloat(IO.readLine());
 					
-					createCrateEntity(sideLength, x, y, z, mass, e);
+					ncreateCrateEntity(sideLength, x, y, z, mass, e);
 				}
 						
 				// circle
@@ -515,7 +572,7 @@ public class SimulationWindow {
 					float mass = Float.parseFloat(IO.readLine());
 					float e = Float.parseFloat(IO.readLine());
 					
-					createMetalBoxEntity(height,width, x, y, z, mass, e);
+					ncreateMetalBoxEntity(height,width, x, y, z, mass, e);
 				}
 						
 				// line buffer

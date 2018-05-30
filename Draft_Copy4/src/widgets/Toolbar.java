@@ -29,6 +29,7 @@ public class Toolbar {
 	private Button rectangleButton;		// rButton
 	private Button circleButton;		// cButton
 	private Button rampButton;			// raButton
+	private Button cannonButton;
 
 	// static variables
 	public static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
@@ -36,6 +37,7 @@ public class Toolbar {
 	public static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
 	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
 	public static String RAMP_BUTTON_TEXTURE_FILE = "./res/Ramp.png";
+	public static String CANNON_BUTTON_TEXTURE_FILE="./res/CannonB.png";
 
 	// constructor
 	public  Toolbar(Loader loader, float screenWidth, float screenHeight, float z) {
@@ -76,6 +78,9 @@ public class Toolbar {
 		float raButtonX = cButtonX +buttonWidth;
 		Vector3f raButtonPos = new Vector3f(raButtonX, buttonY, z - 100f);
 		
+		float caButtonX = raButtonX +buttonWidth;
+		Vector3f caButtonPos = new Vector3f(caButtonX, buttonY, z - 100f);
+		
 		// **************************************************
 		
 		// menu button
@@ -108,6 +113,13 @@ public class Toolbar {
 		
 		rampButton = new Button(raButtonModel, raButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
+		textureID = loader.loadTexture(CANNON_BUTTON_TEXTURE_FILE);
+		
+		Model caButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		cannonButton = new Button(caButtonModel, caButtonPos, rotation, scale, buttonWidth, buttonHeight);
+		
+		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(menuButton);
@@ -115,6 +127,7 @@ public class Toolbar {
 		guiComponents.add(rectangleButton);
 		guiComponents.add(circleButton);
 		guiComponents.add(rampButton);
+		guiComponents.add(cannonButton);
 		
 		// initialize button array list
 		buttons = new ArrayList<Button>();
@@ -123,6 +136,7 @@ public class Toolbar {
 		buttons.add(rectangleButton);
 		buttons.add(circleButton);
 		buttons.add(rampButton);
+		buttons.add(cannonButton);
 	}
 	
 	/**
@@ -187,6 +201,10 @@ public class Toolbar {
 	 */
 	public Button getRampButton() {
 		return rampButton;
+	}
+	public Button getCannonButton()
+	{
+		return cannonButton;
 	}
 	
 }
