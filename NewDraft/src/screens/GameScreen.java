@@ -168,10 +168,10 @@ public class GameScreen {
 		sidebar.getButtons().get(4).setModel(loader.loadToVAO(vertices, texCoords, indices, 
 			loader.loadTexture(LOCK_TEXTURE_FILE)));
 			
-		for(int i = 1; i<sidebar.getButtons().size();i++)
-		{
-			sidebar.getButtons().get(i).setEnabled(false);
-		}
+////		for(int i = 1; i<sidebar.getButtons().size();i++)
+//		{
+//			sidebar.getButtons().get(i).setEnabled(false);
+//		}
 		this.loader = loader;
 				
 		
@@ -244,11 +244,13 @@ public class GameScreen {
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
 			if(hit==true)
 			{
-				
+				if(currentSim<5)
+				{
 				int nlabel = currentSim+1;
 				sidebar.getButtons().get(currentSim).getModel().setTextureID("./res/level_"+nlabel+".png", loader);
 				sidebar.getButtons().get(currentSim).setEnabled(true);
 				renderer.render(levels.displayMessage(simulation, loader, z));
+				}
 				
 			}
 		}
@@ -562,7 +564,7 @@ public class GameScreen {
 					sim.remove(0);
 					}
 					// loop through entities of simulation
-					for (Entity entity: sim) {
+					for (Entity entity: simulation.getEntities()) {
 							
 						if (entity.intersects(x, y)) {
 								
