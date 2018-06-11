@@ -29,6 +29,7 @@ public class Toolbar {
 	private Button rectangleButton;		// rButton
 	private Button circleButton;		// cButton
 	private Button cannonButton;
+	private Button pathButton;
 
 	// static variables
 	public static String MENU_BUTTON_TEXTURE_FILE = "./res/MenuB.png";
@@ -36,6 +37,7 @@ public class Toolbar {
 	public static String RECT_BUTTON_TEXTURE_FILE = "./res/Rect.png";
 	public static String CIRC_BUTTON_TEXTURE_FILE = "./res/Circ.png";
 	public static String CANN_BUTTON_TEXTURE_FILE = "./res/Cannon.png";
+	public static String PATH_BUTTON_TEXTURE_FILE = "./res/pathB.png";
 
 	// constructor
 	public  Toolbar(Loader loader, float z) {
@@ -76,6 +78,9 @@ public class Toolbar {
 		float caButtonX = cButtonX +buttonWidth;
 		Vector3f caButtonPos = new Vector3f(caButtonX, buttonY, z - 100f);
 		
+		float paButtonX = caButtonX +buttonWidth;
+		Vector3f paButtonPos = new Vector3f(paButtonX, buttonY, z - 100f);
+		
 		
 		// **************************************************
 		
@@ -108,6 +113,11 @@ public class Toolbar {
 		
 		cannonButton = new Button(caButtonModel, caButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
+		textureID = loader.loadTexture(PATH_BUTTON_TEXTURE_FILE);
+		Model paButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
+		
+		pathButton = new Button(paButtonModel, paButtonPos, rotation, scale, buttonWidth, buttonHeight);
+		
 		// initialize GUI components array list
 		guiComponents = new ArrayList<GUIComponent>();
 		guiComponents.add(menuButton);
@@ -115,6 +125,7 @@ public class Toolbar {
 		guiComponents.add(rectangleButton);
 		guiComponents.add(circleButton);
 		guiComponents.add(cannonButton);
+		guiComponents.add(pathButton);
 		
 		// initialize button array list
 		buttons = new ArrayList<Button>();
@@ -123,6 +134,7 @@ public class Toolbar {
 		buttons.add(rectangleButton);
 		buttons.add(circleButton);
 		buttons.add(cannonButton);
+		buttons.add(pathButton);
 	}
 	
 	/**
@@ -183,6 +195,11 @@ public class Toolbar {
 	public Button getCannonButton()
 	{
 		return cannonButton;
+	}
+	
+	public Button getPathButton()
+	{
+		return pathButton;
 	}
 	
 }

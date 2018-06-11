@@ -51,6 +51,7 @@ public class CustomizedScreen {
 	private Label selectASimLabel;
 	private Label title;
 	
+	private UserGuideScreen1 userGuide;
 	private Text currentSimName;
 	
 	private float selectedEntityOriginalX;
@@ -74,6 +75,10 @@ public class CustomizedScreen {
 	private long window;
 	private float screenWidth;
 	private float screenHeight;
+	
+	public static String CUST_PG1 = "./res/CustUserGuide1.png";
+	public static String CUST_PG2 = "";
+	public static String CUST_PG3 = "";
 	
 	// static variables
 	public static final String SAVE_BUTTON_TEXTURE_FILE = "./res/Save.png";
@@ -545,7 +550,13 @@ public class CustomizedScreen {
 						// info button
 						else if (button.equals(toolbar.getInfoButton())) {
 								
-							UserGuideScreen.showUserGuide();
+							//UserGuideScreenCust.showUserGuide();
+//							userGuide = new UserGuideScreen1(window, loader, screenWidth, screenHeight, z,CUST_PG1 );
+//							
+//							guiComponents.add(userGuide.getRight());
+//							guiComponents.add(userGuide.getleft());
+//							guiComponents.add(userGuide.getLabel());
+							main.setCurrScreen(4);
 							return;
 						}
 						

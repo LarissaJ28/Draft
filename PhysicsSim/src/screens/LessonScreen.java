@@ -99,6 +99,7 @@ public class LessonScreen {
 	public LessonScreen(long window, Loader loader, float screenWidth, float screenHeight, float z, 
 			String[] files) {
 		
+		
 		// simulation window
 		simulation = new SimulationWindow(window, loader, screenWidth, screenHeight, z);
 				
@@ -525,7 +526,7 @@ public class LessonScreen {
 					// info button
 					else if (button.equals(toolbar.getInfoButton())) {
 										
-						UserGuideScreen.showUserGuide();
+						main.setCurrScreen(4);
 						return;
 					}
 				}

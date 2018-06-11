@@ -21,6 +21,7 @@ import widgets.Button;
 import widgets.GUIComponent;
 import widgets.Label;
 import widgets.Levels;
+import widgets.Path;
 import widgets.PopUpBox;
 import widgets.Sidebar;
 import widgets.SimulationWindow;
@@ -73,6 +74,7 @@ public class GameScreen {
 	private int Type=0;
 	private int lockedMessage=0;
 	private int play =0;
+	private Path path = new Path();
 	// static variables
 	public static final String LEVEL_1_TEXTURE_FILE = "./res/level_1.png";
 	public static final String LEVEL_2_TEXTURE_FILE = "./res/level_2.png";
@@ -83,6 +85,9 @@ public class GameScreen {
 	public static final String SELECT_A_SIM_LABEL_TEXTURE_FILE = "./res/selectASimulationLabel.png";
 	public static final String TITLE_TEXTURE_FILE = "./res/gameLabel.png";
 	public static final String LOCK_MESSAGE_TEXTURE_FILE = "./res/LevelDisabled.png";
+	public static final String PATH_TEXTURE_FILE ="./res/path.png";
+	public static final String PATH_BUTTON ="./res/pathB.png";
+	
 	
 	// constructor
 	public GameScreen(long window, Loader loader, float screenWidth, float screenHeight, float z,
@@ -170,7 +175,7 @@ public class GameScreen {
 		sidebar.getButtons().get(4).setModel(loader.loadToVAO(vertices, texCoords, indices, 
 			loader.loadTexture(LOCK_TEXTURE_FILE)));
 			
-		for(int i = 1; i<sidebar.getButtons().size();i++)
+		for(int i = sidebar.getButtons().size()-1; i>0;i--)
 		{
 			
 			sidebar.getButtons().get(i).setEnabled(false);
@@ -237,24 +242,31 @@ public class GameScreen {
 			popUpBox.update(offsetX, offsetY);
 			popUpBox.render(renderer);
 		}
-//		if(currentSim==1 && simulation.getEntities().get(0).intersects(simulation.getTarget())==true)
-//		{
-//			System.out.println("Target hit");
-//			//return true;
-//		}
+
 		else if(simulation.isPaused()==false && currentSim>0)
 		{
 			
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
 			if(hit==true)
 			{
-				
+				if(currentSim<5)
+				{
 				int nlabel = currentSim+1;
 				sidebar.getButtons().get(currentSim).getModel().setTextureID("./res/level_"+nlabel+".png", loader);
 				sidebar.getButtons().get(currentSim).setEnabled(true);
+				}
 				renderer.render(levels.displayMessage(simulation, loader, z));
 				
 			}
+		}
+		 if(Type==1)
+		{
+			float x = simulation.getEntities().get(0).getPosition().x;
+			float y = simulation.getEntities().get(0).getPosition().y;
+			float z = simulation.getEntities().get(0).getPosition().z;
+			path.trajectory(loader, x, y, z);
+			path.render(renderer);
+			
 		}
 	}
 	
@@ -518,7 +530,7 @@ public class GameScreen {
 						// info button
 						else if (button.equals(toolbar.getInfoButton())) {
 										
-							UserGuideScreen.showUserGuide();
+							main.setCurrScreen(4);
 							return;
 						}
 								
@@ -568,6 +580,15 @@ public class GameScreen {
 						
 							program = 1;
 							return;
+						}
+						else if (button.equals(toolbar.getPathButton()))
+						{
+							Type=1;
+							float x1 = simulation.getEntities().get(0).getPosition().x;
+							float y1 = simulation.getEntities().get(0).getPosition().y;
+							float z = simulation.getEntities().get(0).getPosition().z;
+							path.trajectory(loader, x1, y1, z);
+							System.out.println("In");
 						}
 					}
 								
@@ -708,7 +729,7 @@ public class GameScreen {
 						popUpBox.setDecreaseSizeButtonState(true);
 						popUpBox.setIncreaseMassButtonState(true);
 						popUpBox.setIncreaseSizeButtonState(true);
-						Type=0;
+//						Type=0;
 					}
 					return;
 					

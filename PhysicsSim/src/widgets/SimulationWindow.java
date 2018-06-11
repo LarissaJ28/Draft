@@ -147,7 +147,7 @@ public class SimulationWindow {
 		Model lModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
 		leftBoundary = new Rectangle(lModel, lPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1, lWidth, lHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// right boundary
 		float rWidth = lWidth;	// same as left boundary
@@ -162,7 +162,7 @@ public class SimulationWindow {
 		Model rModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		rightBoundary = new Rectangle(rModel, rPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, rWidth, rHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1, rWidth, rHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		// top boundary
 		float tWidth = gWidth;
@@ -177,7 +177,7 @@ public class SimulationWindow {
 		Model tModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
 		topBoundary = new Rectangle(tModel, tPos, velocity, acceleration, rotation, scale, 
-				maximumMass, 0, tWidth, tHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
+				maximumMass, -1, tWidth, tHeight, BOUNDARY_STATIC_FRICTION, BOUNDARY_KINETIC_FRICTION);
 		
 		
 		// initialize boundaries array list

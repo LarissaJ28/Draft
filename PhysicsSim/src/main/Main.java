@@ -21,6 +21,7 @@ import screens.CustomizedScreen;
 import screens.GameScreen;
 import screens.LessonScreen;
 import screens.MenuScreen;
+import screens.UserGuideScreen1;
 import shaders.ShaderProgram;
 
 /**
@@ -44,6 +45,7 @@ public class Main {
 	private GameScreen gameScreen;
 	private LessonScreen lessonScreen;
 	private CustomizedScreen customizedScreen;
+	private UserGuideScreen1 userGuide;
 	
 	private float z = -1f;
 	private int currScreen;		// 0 = menu, 1 = game, 2 = lesson, 3 = customized
@@ -64,6 +66,8 @@ public class Main {
 	public static final int KEY_LEFT = 3;
 	public static final int KEY_RIGHT = 4;
 	public static final int KEY_R = 5;
+	
+	public static int userType = 0;
 	
 	// main
 	public static void main(String[] args) {
@@ -112,20 +116,33 @@ public class Main {
 					menuScreen.render(renderer);
 					break;
 				case 1:
+					userType=1;
 					gameScreen.input(this, key, leftClick, rightClick);
 					gameScreen.update();
 					gameScreen.render(renderer);
+					userGuide = new UserGuideScreen1(window, loader, WIDTH, HEIGHT, z);
 					break;
 				case 2:
+					userType=2;
 					lessonScreen.input(this, key, leftClick);
 					lessonScreen.update();
 					lessonScreen.render(renderer);
+					userGuide = new UserGuideScreen1(window, loader, WIDTH, HEIGHT, z);
 					break;
 				case 3:
+					userType=3;
 					customizedScreen.input(this, key, leftClick, rightClick);
 					customizedScreen.update();
 					customizedScreen.render(renderer);
+					userGuide = new UserGuideScreen1(window, loader, WIDTH, HEIGHT, z);
 					break;
+				case 4:
+					
+					userGuide.input(this, key, leftClick);
+					
+					userGuide.render(renderer);
+					break;
+					
 			}
 			
 			// reset input holders
@@ -304,6 +321,9 @@ public class Main {
 			customizedScreen = new CustomizedScreen(window, loader, WIDTH, HEIGHT, z, files);
 			
 			IO.closeInputFile();
+			
+			
+			
 			
 		} catch (IOException exception) {
 			exception.printStackTrace();
