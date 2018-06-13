@@ -1,0 +1,4 @@
+3
+./data/customized_sample 1.txt
+./data/customized_sample 2.txt
+./data/customized_sample 3.txt
