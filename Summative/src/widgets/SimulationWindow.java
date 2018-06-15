@@ -280,6 +280,7 @@ public class SimulationWindow {
 		textureID = loader.loadTexture(BALL_TEXTURE_FILE);
 		ballModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
+		//other ball model (one that is supposed to hit the target)
 		textureID = loader.loadTexture(BALL2_TEXTURE_FILE);
 		ball2Model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
@@ -423,7 +424,7 @@ public class SimulationWindow {
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
 		
-		// metal model
+		
 		int textureID = loader.loadTexture(BOUNDARY_TEXTURE_FILE);
 		Model model = loader.loadToVAO(vertices, texCoords, indices, textureID);
 				
@@ -466,7 +467,7 @@ public class SimulationWindow {
 	}
 	
 	/**
-	 * Creates a ball entity in the simulation window.
+	 * Creates a ball entity for the ball that is supposed to hit the target in the simulation window.
 	 * 
 	 * @param radius		the radius of the ball
 	 * @param x				the x coordinate of the ball's center
@@ -705,7 +706,7 @@ public class SimulationWindow {
 					createBallEntity(radius, x, y, z, vx, vy, mass, e);
 				}
 				
-				// circle
+				// circle that is the one that is supposed to hit the target (only for game mode)
 				else if (type.equals("nCIRCLE")) {
 							
 					float radius = Float.parseFloat(IO.readLine());
@@ -718,7 +719,7 @@ public class SimulationWindow {
 					
 					createBall2Entity(radius, x, y, z, vx, vy, mass, e);
 				}
-				// metal
+				// metal (boundary)
 				else if(type.equals("METAL")) {
 					float width = Float.parseFloat(IO.readLine());
 					float height = Float.parseFloat(IO.readLine());

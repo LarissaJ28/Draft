@@ -119,6 +119,7 @@ public class Toolbar {
 		
 		cannonButton = new Button(caButtonModel, caButtonPos, rotation, scale, buttonWidth, buttonHeight);
 		
+		//path button
 		textureID = loader.loadTexture(PATH_BUTTON_TEXTURE_FILE);
 		Model paButtonModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 		
@@ -206,7 +207,11 @@ public class Toolbar {
 	public Button getCannonButton() {
 		return cannonButton;
 	}
-	
+	/**
+	 * Returns the path Button
+	 * 
+	 * @return path Button
+	 */
 	public Button getPathButton()
 	{
 		return pathButton;

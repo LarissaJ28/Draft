@@ -25,16 +25,9 @@ public class PhysicsGameMode {
 	 * all possible collision scenarios.
 	 * 
 	 * @param entities   	the ArrayList containing the entities to check for collision
-	 * @param ground 	 	the boundary bordering the bottom of the simulation window
-	 * @param leftBoundary  the boundary bordering the left of the simulation window
-	 * @param topBoundary 	the boundary bordering the top of the simulation window
-	 * @param rightBoundary  	the boundary bordering the right of the simulation window
+	 * @param boundaries    the ArrayList containing the boundaries to check for collision
 	 * @param z 		 	the z-value of all entities
 	 */
-
-	
-
-		
 		public static void collision(ArrayList<Entity> entities,ArrayList<Entity> boundaries , float z1) {
 				
 			z=z1;
@@ -55,6 +48,7 @@ public class PhysicsGameMode {
 							// if B is Rectangle
 							if (b instanceof Rectangle) {
 								
+								//if a is a Cannon
 								if(a instanceof Cannon)
 								{
 									
@@ -69,6 +63,7 @@ public class PhysicsGameMode {
 							// if B is Circle
 							if (b instanceof Circle) {
 									
+								//if a is a cannon
 								if(a instanceof Cannon)
 								{
 									
@@ -88,6 +83,8 @@ public class PhysicsGameMode {
 								
 							// if B is Rectangle
 							if (b instanceof Rectangle) {
+								
+								//if b is cannon
 								if(b instanceof Cannon)
 								{
 									
@@ -112,51 +109,47 @@ public class PhysicsGameMode {
 				}
 			}
 			
-		// entity-boundary collision
-		for (Entity entity:entities) {
-				
-			// if entity is rectangle
-			if (entity instanceof Rectangle) {
-					
-				Rectangle r = (Rectangle) entity;
-				
-				for (int i = 0; i < boundaries.size(); i++)
-				{
-					Rectangle b = (Rectangle) boundaries.get(i);
-					
-				
-				// ground
-				if (r.getAabb().intersects(b.getAabb())) {
-					collisionRectangleRectangle(b,r,true);
-					
-				}
-					
-				
-					
-				
-					
-				
-			}}
-				
-			// if entity is circle
-			else if (entity instanceof Circle) {
-//					
-				Circle c = (Circle) entity;
-				
-				for (int i = 0; i < boundaries.size(); i++)
-				{
-					Rectangle b = (Rectangle) boundaries.get(i);
-					
-				if (c.intersects(b)==true) 
+			// entity-boundary collision
+			for (Entity entity:entities) {
+
+				// if entity is rectangle
+				if (entity instanceof Rectangle) {
+
+					Rectangle r = (Rectangle) entity;
+
+					//loop through all boundaries
+					for (int i = 0; i < boundaries.size(); i++)
 					{
-					
-					collisionRectangleCircle(b, c, true);
+						Rectangle b = (Rectangle) boundaries.get(i);
+
+						if (r.getAabb().intersects(b.getAabb())) {
+							collisionRectangleRectangle(b,r,true);
+
+						}	
+
 					}
-				
 				}
 				
-			}
-				
+				// if entity is circle
+				else if (entity instanceof Circle) {
+
+					Circle c = (Circle) entity;
+
+					//loop through all boundaries
+					for (int i = 0; i < boundaries.size(); i++)
+					{
+						Rectangle b = (Rectangle) boundaries.get(i);
+
+						if (c.intersects(b)==true) 
+						{
+
+							collisionRectangleCircle(b, c, true);
+						}
+
+					}
+
+				}
+
 		}
 			
 	}
@@ -186,15 +179,18 @@ public class PhysicsGameMode {
 				
 			// if A is to the left of B
 			if (a.getPosition().x < b.getPosition().x) {
-					
+				
+				//if no boundaries are involved
 				if(boundary==false)
 				{
 				// positional correction
 				a.getPosition().sub(horizontal / 2, 0, 0);
 				b.getPosition().add(horizontal / 2, 0, 0);
 				}
+				//if boundaries are involved
 				else
 				{
+				// positional correction
 				b.getPosition().add(horizontal / 2, 0, 0);
 				}
 					
@@ -204,14 +200,18 @@ public class PhysicsGameMode {
 				
 			// if A is to the right of B
 			else {
+				
+				//if no boundaries are involved
 				if(boundary ==false)
 				{
 				// positional correction
 				a.getPosition().add(horizontal / 2, 0, 0);
 				b.getPosition().sub(horizontal / 2, 0, 0);
 				}
+				//if boundaries are involved
 				else
 				{
+					// positional correction
 					b.getPosition().sub(horizontal / 2, 0, 0);
 				}
 				// set collision normal (direction A should travel)
@@ -226,6 +226,7 @@ public class PhysicsGameMode {
 			// if A is to the left of B
 			if (a.getPosition().x < b.getPosition().x) {
 
+				//if no boundaries are involved
 				if(boundary==false)
 				{
 					// positional correction
@@ -233,9 +234,9 @@ public class PhysicsGameMode {
 					b.getPosition().add(horizontal / 2, vertical / 2, 0);
 
 				}
-				// positional correction
-				
+				//if boundaries are involved
 				else {
+					// positional correction
 					b.getPosition().add(horizontal / 2, vertical / 2, 0);
 				}
 				
@@ -246,14 +247,16 @@ public class PhysicsGameMode {
 				
 			// if A is to the right of B
 			else {
+				//if no boundaries are involved
 				if(boundary == false)
 				{
 					// positional correction
 					a.getPosition().add(horizontal / 2, vertical / 2, 0);
 					b.getPosition().sub(horizontal / 2, vertical / 2, 0);
 				}
-				// positional correction
+				//if boundaries are involved
 				else {
+					// positional correction
 					b.getPosition().sub(horizontal / 2, vertical / 2, 0);
 				}
 				
@@ -269,15 +272,17 @@ public class PhysicsGameMode {
 				
 			// if A is to the bottom of B
 			if (a.getPosition().y < b.getPosition().y) {
+				
+				//if no boundaries are involved
 				if(boundary==false)
 				{
 					// positional correction
 					a.getPosition().sub(0, vertical / 2, 0);
 					b.getPosition().add(0, vertical / 2, 0);
 				}
+				//if boundaries are involved
 				else {
 				// positional correction
-				
 				b.getPosition().add(0, vertical / 2, 0);
 				}
 					
@@ -287,13 +292,17 @@ public class PhysicsGameMode {
 			
 			// if A is to the top of B
 			else {
+				
+				//if no boundaries are involved
 				if(boundary==false)
 				{
 					// positional correction
 					a.getPosition().add(0, vertical / 2, 0);
 					
 				}
+				//if boundaries are involved
 				else {
+					// positional correction
 					b.getPosition().sub(0, vertical / 2, 0);
 				}
 				
@@ -308,10 +317,7 @@ public class PhysicsGameMode {
 		impulseResolution(collisionNormal, a, b, boundary);
 	}
 	
-//	public static void collisionRampCircle(Ramp a, Circle b)
-//	{
-//		Vector3f closest = new Vector3f(b.getPosition().x, b.getPosition().y, b.getPosition().z);
-//	}
+
 		
 	/**
 	 * Manages rectangle-circle collision.
@@ -345,8 +351,7 @@ public class PhysicsGameMode {
 		radius.sub(collisionNormal, penetration);
 			
 			
-		// positional correction
-			
+		// positional correction with a boundary 	
 		if (boundaryCollision) {
 			
 			Vector3f newPos = new Vector3f(
@@ -355,6 +360,7 @@ public class PhysicsGameMode {
 					b.getPosition().z);
 				b.setPosition(newPos);
 		}
+		// positional correction without a boundary 
 		else {
 				
 				Vector3f newPos = new Vector3f(
@@ -482,7 +488,7 @@ public class PhysicsGameMode {
 			
 			// apply friction
 			// this method is called here to make use of the impulse scalar that was calculated
-			//friction(collisionNormal, a, b, impulseScalar);
+			friction(collisionNormal, a, b, impulseScalar);
 		}
 	}
 	

@@ -25,6 +25,7 @@ import widgets.GUIComponent;
  */
 public class UserGuideScreen1 {
 
+	//static variables
 	public static String CUST_PG1 = "./res/CustUserGuide1.png";
 	public static String CUST_PG2 = "./res/CustUserGuide2.png";
 	public static String CUST_PG3 = "./res/CustUserGuide3.png";
@@ -36,7 +37,7 @@ public class UserGuideScreen1 {
 	public static String LESS_PG1 = "./res/LessUserGuide1.png";
 	public static String LESS_PG2 = "./res/LessUserGuide2.png";
 	
-	
+	// instance variables	
 	private ArrayList<GUIComponent> guiComponents;
 	private ArrayList<String> images;
 	private Label label;
@@ -54,17 +55,28 @@ public class UserGuideScreen1 {
 	private float screenHeight;
 	private int max;
 	
-	//constructor
-	//creates a user guide
+	/**
+	 * Creates the personalized user guides for each screen
+	 * 
+	  * @param window			the window ID
+	 * @param loader			the loader object
+	 * @param screenWidth		the width of the screen
+	 * @param screenHeight		the height of the screen
+	 * @param z					the z-value of the components of the screen
+	 */
 	public UserGuideScreen1(long window, Loader loader, float screenWidth, float screenHeight, float z) 
 	{
+		//picks the images that need to be displayed
 		getImages();
+		
+		//sets the variables
 		this.z = z;
 		this.window = window;
 		this.screenWidth = screenWidth;
 		this.screenHeight= screenHeight;
-		
 		this.loader= loader;
+		
+		//creates the image that needs to be displayed
 		float[] vertices = Entity.getVertices(screenWidth, screenHeight, z);
 		float[] texCoords = Entity.getTexCoords();
 		int[] indices = Entity.getIndices();
@@ -79,11 +91,15 @@ public class UserGuideScreen1 {
 		Model selectionASimModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
 						
 		label = new Label(selectionASimModel, position, rotation, 1, screenWidth, screenHeight);
+		
 		guiComponents= new ArrayList<GUIComponent>();
 		
+		//calls on the method that creates the arrow keys
 		arrowButtons();
+
 		guiComponents.add(label);
 		
+		//sets the maximum number of pages
 		if(Main.userType == 2)
 		{
 			max=1;
@@ -142,17 +158,20 @@ public class UserGuideScreen1 {
 		y *= -1;
 		y += screenHeight/2;
 	
-			// if left mouse button was pressed
+		// if left mouse button was pressed
 		if (leftClick) {
 		
+			//right arrow key
 			if(right.getAabb().intersects(x, y)&&right.isEnabled())
 			{
 				incChangeTheBackground();
 			}
+			//left arrow key
 			else if(left.getAabb().intersects(x,y)&& left.isEnabled())
 			{
 				decChangeTheBackground();
 			}
+			//close button
 			else if(close.getAabb().intersects(x,y))
 			{
 				main.setCurrScreen(Main.userType);
@@ -165,10 +184,11 @@ public class UserGuideScreen1 {
 	 */
 	public void incChangeTheBackground()
 	{
+		//sets up the next page
 		page++;
-		
 		label.getModel().setTextureID(images.get(page), loader);
 		
+		//checks if this is the last page
 		if(page==max)
 		{
 			right.getModel().setTextureID(RIGHT_BUTTON_DISABLED_TEXTURE_FILE, loader);
@@ -188,8 +208,11 @@ public class UserGuideScreen1 {
 	 */
 	public void decChangeTheBackground()
 	{
+		//sets up the page
 		page--;
 		label.getModel().setTextureID(images.get(page), loader);
+		
+		//checks if this is the first page
 		if(page==0)
 		{
 			left.getModel().setTextureID(LEFT_BUTTON_DISABLED_TEXTURE_FILE, loader);
@@ -222,7 +245,6 @@ public class UserGuideScreen1 {
 		
 		int textureID = loader.loadTexture(LEFT_BUTTON_DISABLED_TEXTURE_FILE);
 		Model leftModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
-		
 				
 		left = new Button(leftModel, position, rotation, 1, 50, 50);
 		left.setEnabled(false);
@@ -231,7 +253,7 @@ public class UserGuideScreen1 {
 		 labelY = -220;
 		
 		 position = new Vector3f(labelX, labelY, z);
-		 rotation = new Vector3f(0,0,0);
+		
 		
 		textureID = loader.loadTexture(RIGHT_BUTTON_ENABLED_TEXTURE_FILE);
 		Model rightModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -243,7 +265,6 @@ public class UserGuideScreen1 {
 		 labelY = 250;
 		
 		 position = new Vector3f(labelX, labelY, z);
-		 rotation = new Vector3f(0,0,0);
 		
 		textureID = loader.loadTexture(CLOSE_BUTTON);
 		Model closeModel = loader.loadToVAO(vertices, texCoords, indices, textureID);
@@ -263,21 +284,21 @@ public class UserGuideScreen1 {
 	{
 		images = new ArrayList<String>();
 		switch(Main.userType) {
+		
+		//game
 		case 1: images.add(GAME_PG1);
 		images.add(GAME_PG2);
 		images.add(GAME_PG3);
 		break;
-		
+		//lesson
 		case 2:images.add(LESS_PG1);
 		images.add(LESS_PG2);
-		
 		break;
-		
+		//customized
 		case 3:images.add(CUST_PG1);
 		images.add(CUST_PG2);
 		images.add(CUST_PG3);
-		break;
-				
+		break;		
 		}
 	}
 	

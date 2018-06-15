@@ -57,7 +57,8 @@ public class GameScreen {
 	private float z;
 	
 	private Levels levels = new Levels();
-	private Boolean Path = false;	
+	private Boolean Path = false;
+	
 	// specifies the program:
 	// 0 = default
 	// 1 = new entity created
@@ -73,6 +74,7 @@ public class GameScreen {
 	private float screenWidth;
 	private float screenHeight;
 	private Path path = new Path();
+	
 	// static variables
 	public static final String LEVEL_1_TEXTURE_FILE = "./res/level_1.png";
 	public static final String LEVEL_2_TEXTURE_FILE = "./res/level_2.png";
@@ -189,6 +191,8 @@ public class GameScreen {
 		this.window = window;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+		
+		//adds path button to toolbar
 		guiComponents.add(toolbar.getPathButton());
 		
 	}
@@ -205,8 +209,11 @@ public class GameScreen {
 		simulation.render(renderer);
 		
 		renderer.renderGUI(guiComponents);
+		
+		//creates the path of a ball
 		if (Path)
 		{
+			//continues to add to the path
 			if(stopPath)
 			{
 			float x = simulation.getEntities().get(0).getPosition().x;
@@ -214,14 +221,19 @@ public class GameScreen {
 			float z = simulation.getEntities().get(0).getPosition().z;
 			path.trajectory(loader, x, y, z);
 			}
+			//shows path of ball
 			path.render(renderer);
 		}
+		
+		// shows message to select a simulation
 		if (currentSim == -1)
 			renderer.render(selectASimLabel);
 		
+		//check if an an object is allowed to move
 		if (program == 1 || program == 3)
 			moveEntity();
 		
+		//shows a pop up box
 		else if (program == 2) {
 			
 			float x = 0f;
@@ -244,11 +256,16 @@ public class GameScreen {
 			popUpBox.render(renderer);
 		}
 		
+		//check if a simulation is played
 		else if(!simulation.isPaused() && currentSim>0) {
 			
+			//check if the target is hit
 			Boolean hit = levels.check(currentSim, simulation.getEntities().get(0), simulation.getTarget());
+			
+			//if target is hit outdo the actions below
 			if(hit==true)
 			{
+				//unlock next level
 				if (currentSim < 5) {
 				
 					int nlabel = currentSim+1;
@@ -361,7 +378,7 @@ public class GameScreen {
 					// increase velocity x button
 					if (popUpBox.getIncreaseVelocityXButton().getAabb().intersects(x, y)) {
 						
-						// increase entity's horizontal velocity
+						// increase entity's horizontal stored velocity
 						selectedEntity.getStoredVelocity().x += 5f;
 						
 						if (selectedEntity.getStoredVelocity().x > 995f) {
@@ -380,7 +397,7 @@ public class GameScreen {
 					// decrease velocity x button
 					else if (popUpBox.getDecreaseVelocityXButton().getAabb().intersects(x, y)) {
 						
-						// decrease entity's horizontal velocity
+						// decrease entity's horizontal stored velocity
 						selectedEntity.getStoredVelocity().x -= 5f;
 						
 						if (selectedEntity.getStoredVelocity().x < -995) {
@@ -399,7 +416,7 @@ public class GameScreen {
 					// increase velocity y button
 					else if (popUpBox.getIncreaseVelocityYButton().getAabb().intersects(x, y)) {
 						
-						// increase entity's vertical velocity
+						// increase entity's vertical stored velocity
 						selectedEntity.getStoredVelocity().y += 5f;
 						
 						if (selectedEntity.getStoredVelocity().y > 995f) {
@@ -418,7 +435,7 @@ public class GameScreen {
 					// decrease velocity y button
 					else if (popUpBox.getDecreaseVelocityYButton().getAabb().intersects(x, y)) {
 						
-						// decrease entity's vertical velocity
+						// decrease entity's vertical stored velocity
 						selectedEntity.getStoredVelocity().y -= 5f;
 						
 						if (selectedEntity.getStoredVelocity().y < -995) {
@@ -672,6 +689,7 @@ public class GameScreen {
 							// cannon button
 							else if (button.equals(toolbar.getCannonButton()) && simulation.isPaused()) {
 								
+								//generate a cannon
 								float sideLength = 50;
 								float posX = toolbar.getCannonButton().getPosition().x;
 								float posY = toolbar.getCannonButton().getPosition().y;
@@ -685,13 +703,16 @@ public class GameScreen {
 								program = 1;
 								return;
 							}
+							//path button
 							else if(button.equals(toolbar.getPathButton()) && simulation.isPaused())
 							{
+								//turns path off
 								if(Path)
 								{
 									toolbar.getPathButton().getModel().setTextureID(PATH_OFF_BUTTON_TEXTURE_FILE, loader);
 									Path = false;
 								}
+								//turns path on
 								else
 								{
 								toolbar.getPathButton().getModel().setTextureID(PATH_BUTTON_TEXTURE_FILE, loader);
@@ -714,7 +735,10 @@ public class GameScreen {
 							
 						if (levelsUnlocked[i]) {
 						
+							//resets current simulation
 							currentSim = i + 1;
+							
+							//resets simulation and path
 							Path=false;
 							stopPath=true;
 							toolbar.getPathButton().getModel().setTextureID(PATH_OFF_BUTTON_TEXTURE_FILE, loader);
@@ -728,10 +752,7 @@ public class GameScreen {
 						}
 						return;
 					}
-					else if(button.getAabb().intersects(x, y) && !button.isEnabled()) {
-						
-						JOptionPane.showMessageDialog(null, "Level locked.");
-					}
+
 							
 				}
 						
@@ -759,6 +780,7 @@ public class GameScreen {
 				// reset button
 				if (simulation.getResetButton().getAabb().intersects(x, y) && currentSim != -1) {
 					
+					//reset simulation
 					resetSimulation();
 					Path = false;
 					stopPath=true;
@@ -796,12 +818,15 @@ public class GameScreen {
 		
 		// if right mouse button was pressed
 		else if (rightClick && simulation.isPaused() && currentSim != -1 && program == 0) {
+			
+			//disallows the first object to be moved
 			ArrayList<Entity> sim = new ArrayList<Entity>();
 			sim.addAll(simulation.getEntities());
 			if (sim.size()>0)
 			{
 			sim.remove(0);
 			}	
+			
 			// loop through entities of simulation
 			for (Entity entity: sim) {
 						

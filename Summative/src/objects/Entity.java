@@ -81,6 +81,8 @@ public class Entity {
 		// coefficients of friction
 		this.staticFriction = staticFriction;
 		this.kineticFriction = kineticFriction;
+		
+		//stored velocity
 		storedvelocity = new Vector3f (0,0,0);
 	}
 	
@@ -111,6 +113,8 @@ public class Entity {
 				
 		// scale
 		this.scale = scale;
+		
+		//stored velocity
 		storedvelocity = new Vector3f (0,0,0);
 		
 	}
